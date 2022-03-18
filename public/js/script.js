@@ -5,7 +5,7 @@ var app = new Vue({
     // DATA SECTION
     data: {
 
-        apiKey: '4b3a13643ab10188ae2a3c87ceb470a0', // Saving TheMovieDb api key
+        apiKey: 'cdcbdcac2837a7886f31841cf04b185d', // Saving TheMovieDb api key
 
         appHasStarted: false, // Check if the user has started the page or not
 
@@ -163,7 +163,7 @@ var app = new Vue({
         // mediatype: A string like 'movie' or 'tv'
         getGrenres(mediaType) {
             axios
-            .get(`https://api.themoviedb.org/3/genre/${mediaType}/list?api_key=4b3a13643ab10188ae2a3c87ceb470a0`)
+            .get(`https://api.themoviedb.org/3/genre/${mediaType}/list?api_key=cdcbdcac2837a7886f31841cf04b185d`)
             .then((response) => {
                 const genres = response.data.genres;
 
@@ -203,7 +203,7 @@ var app = new Vue({
         this.getGrenres('tv');
 
         // Populating trendingHomePage Section
-        axios.get('https://api.themoviedb.org/3/trending/movie/day?api_key=4b3a13643ab10188ae2a3c87ceb470a0').then((response) => {
+        axios.get('https://api.themoviedb.org/3/trending/movie/day?api_key=cdcbdcac2837a7886f31841cf04b185d').then((response) => {
             const trendingHomePage = response.data.results;
             this.trendingHomePage = trendingHomePage;
             if (this.trendingHomePage.length > 5) {
@@ -212,7 +212,7 @@ var app = new Vue({
         });
 
         // Populating Tv Series Section
-        axios.get('https://api.themoviedb.org/3/trending/tv/day?api_key=4b3a13643ab10188ae2a3c87ceb470a0').then((response) => {
+        axios.get('https://api.themoviedb.org/3/trending/tv/day?api_key=cdcbdcac2837a7886f31841cf04b185d').then((response) => {
             const tvSeriesHomePage = response.data.results;
             this.tvSeriesHomePage = tvSeriesHomePage;
             if (this.tvSeriesHomePage.length > 5) {
@@ -221,7 +221,7 @@ var app = new Vue({
         });
 
         // Populating Movies Section
-        axios.get('https://api.themoviedb.org/3/trending/movie/week?api_key=4b3a13643ab10188ae2a3c87ceb470a0').then((response) => {
+        axios.get('https://api.themoviedb.org/3/trending/movie/week?api_key=cdcbdcac2837a7886f31841cf04b185d').then((response) => {
             const moviesHomePage = response.data.results;
             this.moviesHomePage = moviesHomePage;
             if (this.moviesHomePage.length > 5) {
