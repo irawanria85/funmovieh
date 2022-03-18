@@ -1,152 +1,556 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Películas JackSari</title>
-    <link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="img/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="img/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="img/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="img/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="img/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="img/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="img/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
-    <link rel="manifest" href="img/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="img/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/index.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous"/>
+    <!-- Axios CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
+    <!-- VueJS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <title>Boolflix</title>
 </head>
-<body id="home">
+<body>
+    
+    <!-- VueJS Container -->
+    <div id="root">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a href="./index.html" class="navbar-brand">
-                <img src="./img/logo-movies.png" width="30" height="30" alt="Películas Sari">
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a href="./index.html" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./now-playing.html" class="nav-link">News</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./popular.html" class="nav-link">Popular</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./search.html" class="nav-link">Search</a>
-                    </li>
-                </ul>
+        <!-- App Start Page -->
+        <div class="app-open" v-if="appHasStarted == false">
+            <h1>Welcome to boolflix, click the button to start!</h1>
+            <button @click="startBoolflix(), appHasStarted = true, introIsPlaying = true">Start Boolflix</button>
+        </div>
+        <!-- End App Start Page -->
+
+
+        <!-- Boolflix Started -->
+        <div class="app-started" v-show="appHasStarted">
+            <!-- Boolflix Intro -->
+            <div class="video" id="intro" v-show="introIsPlaying == true">
+                <video autoplay id="video-intro">
+                    <source src="media/boolflix-intro.mp4" type=video/mp4>
+                </video>
             </div>
+            <!-- End Boolflix Intro -->
+            
+            <!-- Boolflix Users -->
+            <div class="user-interface" v-show="userSelected == false && introIsPlaying == false">
+                <div class="user-select">
+                    <div class="logo">
+                        <img src="img/boolflix-logo.png" alt="boolflix-logo">
+                    </div>
+                    <h1>Who's watching Boolflix?</h1>
+                    <div class="profiles-squares">
+                        <div class="profile" v-for="account,index in accounts" @click="userSelected = true, userPic(index)">
+                            <img :src="`img/${account.photo}`" :alt="`${account.alt}`">
+                            <div>{{ account.name }}</div>
+                        </div>
+                    </div>
+                    <div class="manage-accounts">
+                        <button>MANAGE ACCOUNTS</button>
+                    </div>
+                </div>
+            </div>
+            <!-- End Boolflix Users -->
+            
+            
+            <!-- Boolflix -->
+            <div class="boolflix-mainpage" v-show="userSelected == true && introIsPlaying == false">
+                <!-- HEADER -->
+                <header>
+                    <!-- BoolFlix Logo -->
+                    <div class="logo" @click="returnToHomePage()">
+                        <img src="img/boolflix-logo.png" alt="boolflix-logo">
+                    </div>
+                    <!-- BoolFlix Main Menu -->
+                    <nav class="main-menu">
+                        <ul>
+                            <!-- Home -->
+                            <li>
+                                <a href="#" @click="resetPage()">Home</a>
+                            </li>
+                            <!-- Tv Series -->
+                            <li>
+                                <a href="#tv-series">Tv Series</a>
+                            </li>
+                            <!-- Movies -->
+                            <li>
+                                <a href="#movies">Movies</a>
+                            </li>
+                            <!-- Trending -->
+                            <li>
+                                <a href="#trending">Trending</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!-- BoolFlix Search -->
+                    <div class="search-section">
+                        <!-- Select Genre -->
+                        <div class="genre-selection" v-if="searchedMovie.length > 0">
+                            <label for="genres-list">Choose Genre:</label>
+                            <select v-model="thisGenre" id="genres-list">
+                                <option value="All">All</option>
+                                <option v-for="mediaGenre in genresList" :value="mediaGenre">
+                            
+                                    {{ mediaGenre.name }}
+                            
+                                </option>
+                            </select>
+                        </div>
+            
+                        <!-- Search Movie -->
+                        <div class="lense">
+                            <button @click="searchMovie()" class="search-btn"><i class="fas fa-search"></i></button>
+                            <input v-model="searchedMovie" @keyup.enter="searchMovie()" placeholder="search on boolflix">
+                        </div>
+            
+                        <!-- Current User -->
+                        <div class="current-user">
+                            <img :src="`img/${accounts[accountPicture].photo}`" :alt="`${accounts[accountPicture].alt}`">
+                            <i class="fas fa-sort-down"></i>
+                        </div>
+                    </div>
+                </header>
+                <!-- END HEADER -->
+            
+            
+                <!-- MAIN -->
+                <main>
+                    <!-- Movies Container -->
+                    <div class="movies-container">
+            
+            
+                        <!-- Searched Movies -->
+                        <div class="searched-movies" v-if="userHasSearched">
+                            <h2>Search results:</h2>
+                            <div class="movies-list">
+            
+                                <!-- Single Movie -->
+                                <div class="movie-card card" v-for="movie,index in movies" v-if="movie.genre_ids.includes(thisGenre.id) || thisGenre == 'All'">
+            
+                                    <div class="card-inner">
+                                        <div class="card-front">
+                                            <!-- Movie Thumbnail -->
+                                            <div class="movie-thumbnail">
+                                                <img :src=" `https://image.tmdb.org/t/p/w342/${movie.poster_path}` "
+                                                    alt="movie-thumbnail">
+                                            </div>
+                                        </div>
+            
+                                        <div class="card-back" @mouseleave="setTimeout(function(){ movieIndex = -1; }, 300);">
+            
+                                            <!-- Other Infos -->
+                                            <div class="other-infos" v-if="index == movieIndex">
+                                                <h4>Genre:</h4>
+                                                <ul>
+                                                    <li v-for="genre in movieGenres">
+                                                        {{ genre.name }}
+                                                    </li>
+                                                </ul>
+            
+                                                <h4 class="actors">Actors:</h4>
+                                                <ul>
+                                                    <li v-for="actor in movieCast">
+                                                        {{ actor }}
+                                                    </li>
+                                                </ul>
+            
+                                                <button @click="movieIndex = -1" class="movie-inside-button">Go Back</button>
+                                            </div>
+            
+            
+                                            <!-- Movie Infos -->
+                                            <div class="movie-info" v-else>
+                                                <!-- Movie Name -->
+                                                <div class="movie-name">
+                                                    <span class="movie-caption">Title:</span> {{ movie.title || movie.name }}
+                                                </div>
+                                                <!-- Movie Original Name -->
+                                                <div class="movie-original-name"
+                                                    v-show="movie.title != movie.original_title || movie.name != movie.original_name">
+                                                    <span class="movie-caption">Original Title:</span> {{ movie.original_title
+                                                    ||
+                                                    movie.original_name }}
+                                                </div>
+                                                <!-- Movie Language -->
+                                                <div class="movie-lang">
+                                                    <span class="movie-caption">Language:</span>
+                                                    <img src="img/english-flag.png" alt="english-flag"
+                                                        v-if=" movie.original_language == 'en' ">
+                                                    <img src="img/italian-flag.png" alt="italian-flag"
+                                                        v-else-if=" movie.original_language == 'it' ">
+                                                    <img src="img/japan-flag.png" alt="japan-flag"
+                                                        v-else-if=" movie.original_language == 'ja' ">
+                                                    <img src="img/spain-flag.png" alt="spain-flag"
+                                                        v-else-if=" movie.original_language == 'es' ">
+                                                    <span v-else>unknown</span>
+                                                </div>
+                                                <!-- Movie Rating -->
+                                                <div class="movie-rating">
+                                                    <!-- Stars -->
+                                                    <div>
+                                                        <span class="movie-caption">Rating:</span>
+                                                        <i class="fas fa-star"
+                                                            v-for="star in obtainRating(movie.vote_average)"></i><i
+                                                            class="far fa-star"
+                                                            v-for="star in (5 - obtainRating(movie.vote_average))"></i>
+                                                    </div>
+                                                </div>
+                                                <!-- Movie Overviw -->
+                                                <div class="movie-overview">
+                                                    <span class="movie-caption">Overview:</span>
+                                                    <p class="overview" v-if="movie.overview.length > 120">{{
+                                                        movie.overview.substring(0, 80) +
+                                                        '...' }}</p>
+                                                    <p class="overview" v-else>{{ movie.overview }}</p>
+                                                </div>
+                                                <!-- Toggle Other Infos -->
+                                                <button @click="showOtherInfos(movie, index)" class="movie-inside-button more">More</button>
+                                            </div>
+            
+                                        </div>
+                                    </div>
+            
+                                </div>
+                                <!-- End Single Movie -->
+            
+                            </div>
+            
+                        </div>
+                        <!-- End Movies -->
+            
+                        <!-- Boolflix Home Page -->
+                        <div class="homepage" v-else>
+                            <!-- Trending Section-->
+                            <span id="trending"></span>
+                            <h2>Trending</h2>
+                            <div class="trending-section">
+                                <!-- Single Movie -->
+                                <div class="trending card" v-for="movie,index in trendingHomePage">
+            
+                                    <div class="card-inner">
+                                        <div class="card-front">
+                                            <!-- Movie Thumbnail -->
+                                            <div class="movie-thumbnail">
+                                                <img :src=" `https://image.tmdb.org/t/p/w342/${movie.poster_path}` ">
+                                            </div>
+                                        </div>
+            
+                                        <div class="card-back" @mouseleave="setTimeout(function(){ movieIndex = -1; }, 300);">
+            
+                                            <!-- Other Infos -->
+                                            <div class="other-infos" v-if="index == movieIndex && movieGenres.length > 0">
+                                                <!-- Movie Genres -->
+                                                <h4>Genre:</h4>
+                                                <ul>
+                                                    <li v-for="genre in movieGenres">
+                                                        {{ genre.name }}
+                                                    </li>
+                                                </ul>
+            
+                                                <!-- Movie Actors -->
+                                                <h4 class="actors">Actors:</h4>
+                                                <ul>
+                                                    <li v-for="actor in movieCast">
+                                                        {{ actor }}
+                                                    </li>
+                                                </ul>
+            
+                                                <!-- Go Back Button -->
+                                                <button @click="movieIndex = -1" class="movie-inside-button">Go Back</button>
+                                            </div>
+            
+            
+                                            <!-- Movie Infos -->
+                                            <div class="movie-info" v-else>
+            
+                                                <!-- Movie Name -->
+                                                <div class="movie-name">
+                                                    <span class="movie-caption">Title:</span> {{ movie.title || movie.name }}
+                                                </div>
+            
+                                                <!-- Movie Original Name -->
+                                                <div class="movie-original-name"
+                                                    v-show="movie.title != movie.original_title || movie.name != movie.original_name">
+                                                    <span class="movie-caption">Original Title:</span> {{ movie.original_title
+                                                    ||
+                                                    movie.original_name }}
+                                                </div>
+            
+                                                <!-- Movie Language -->
+                                                <div class="movie-lang">
+                                                    <span class="movie-caption">Language:</span>
+                                                    <img src="img/english-flag.png" alt="english-flag"
+                                                        v-if=" movie.original_language == 'en' ">
+                                                    <img src="img/italian-flag.png" alt="italian-flag"
+                                                        v-else-if=" movie.original_language == 'it' ">
+                                                    <img src="img/japan-flag.png" alt="japan-flag"
+                                                        v-else-if=" movie.original_language == 'ja' ">
+                                                    <img src="img/spain-flag.png" alt="spain-flag"
+                                                        v-else-if=" movie.original_language == 'es' ">
+                                                    <span v-else>unknown</span>
+                                                </div>
+            
+                                                <!-- Movie Rating -->
+                                                <div class="movie-rating">
+                                                    <!-- Stars -->
+                                                    <div>
+                                                        <span class="movie-caption">Rating:</span>
+                                                        <i class="fas fa-star"
+                                                            v-for="star in obtainRating(movie.vote_average)"></i><i
+                                                            class="far fa-star"
+                                                            v-for="star in (5 - obtainRating(movie.vote_average))"></i>
+                                                    </div>
+                                                </div>
+            
+                                                <!-- Movie Overviw -->
+                                                <div class="movie-overview">
+                                                    <span class="movie-caption">Overview:</span>
+                                                    <p class="overview" v-if="movie.overview.length > 120">{{
+                                                        movie.overview.substring(0, 80) +
+                                                        '...' }}
+                                                    </p>
+                                                    <p class="overview" v-else>{{ movie.overview }}</p>
+                                                </div>
+            
+                                                <!-- Toggle Other Infos -->
+                                                <button @click="showOtherInfos(movie, index)" class="movie-inside-button more">More</button>
+                                            </div>
+            
+                                        </div>
+                                    </div>
+            
+                                </div>
+                                <!-- End Single Movie -->
+                            </div>
+                            <!-- End Trending -->
+            
+                            <!-- Tv Series -->
+                            <h2 id="tv-series">Tv Series</h2>
+                            <div class="tv-series-section">
+                                <!-- Single Movie -->
+                                <div class="tv-series card" v-for="movie,index in tvSeriesHomePage">
+            
+                                    <div class="card-inner">
+                                        <div class="card-front">
+                                            <!-- Movie Thumbnail -->
+                                            <div class="movie-thumbnail">
+                                                <img :src=" `https://image.tmdb.org/t/p/w342/${movie.poster_path}` ">
+                                            </div>
+                                        </div>
+            
+                                        <div class="card-back" @mouseleave="setTimeout(function(){ movieIndex = -1; }, 300);">
+            
+                                            <!-- Other Infos -->
+                                            <div class="other-infos" v-if="index == movieIndex">
+                                                <!-- Movie Genres -->
+                                                <h4>Genre:</h4>
+                                                <ul>
+                                                    <li v-for="genre in movieGenres">
+                                                        {{ genre.name }}
+                                                    </li>
+                                                </ul>
+            
+                                                <!-- Movie Actors -->
+                                                <h4 class="actors">Actors:</h4>
+                                                <ul>
+                                                    <li v-for="actor in movieCast">
+                                                        {{ actor }}
+                                                    </li>
+                                                </ul>
+            
+                                                <!-- Go Back Button -->
+                                                <button @click="movieIndex = -1" class="movie-inside-button">Go Back</button>
+                                            </div>
+            
+            
+                                            <!-- Movie Infos -->
+                                            <div class="movie-info" v-else>
+            
+                                                <!-- Movie Name -->
+                                                <div class="movie-name">
+                                                    <span class="movie-caption">Title:</span> {{ movie.title || movie.name }}
+                                                </div>
+            
+                                                <!-- Movie Original Name -->
+                                                <div class="movie-original-name"
+                                                    v-show="movie.title != movie.original_title || movie.name != movie.original_name">
+                                                    <span class="movie-caption">Original Title:</span> {{ movie.original_title
+                                                    ||
+                                                    movie.original_name }}
+                                                </div>
+            
+                                                <!-- Movie Language -->
+                                                <div class="movie-lang">
+                                                    <span class="movie-caption">Language:</span>
+                                                    <img src="img/english-flag.png" alt="english-flag"
+                                                        v-if=" movie.original_language == 'en' ">
+                                                    <img src="img/italian-flag.png" alt="italian-flag"
+                                                        v-else-if=" movie.original_language == 'it' ">
+                                                    <img src="img/japan-flag.png" alt="japan-flag"
+                                                        v-else-if=" movie.original_language == 'ja' ">
+                                                    <img src="img/spain-flag.png" alt="spain-flag"
+                                                        v-else-if=" movie.original_language == 'es' ">
+                                                    <span v-else>unknown</span>
+                                                </div>
+            
+                                                <!-- Movie Rating -->
+                                                <div class="movie-rating">
+                                                    <!-- Stars -->
+                                                    <div>
+                                                        <span class="movie-caption">Rating:</span>
+                                                        <i class="fas fa-star"
+                                                            v-for="star in obtainRating(movie.vote_average)"></i><i
+                                                            class="far fa-star"
+                                                            v-for="star in (5 - obtainRating(movie.vote_average))"></i>
+                                                    </div>
+                                                </div>
+            
+                                                <!-- Movie Overviw -->
+                                                <div class="movie-overview">
+                                                    <span class="movie-caption">Overview:</span>
+                                                    <p class="overview" v-if="movie.overview.length > 120">{{
+                                                        movie.overview.substring(0, 80) +
+                                                        '...' }}
+                                                    </p>
+                                                    <p class="overview" v-else>{{ movie.overview }}</p>
+                                                </div>
+            
+                                                <!-- Toggle Other Infos -->
+                                                <button @click="showOtherInfos(movie, index)" class="movie-inside-button more">More</button>
+                                            </div>
+            
+                                        </div>
+                                    </div>
+            
+                                </div>
+                                <!-- End Single Movie -->
+                            </div>
+                            <!-- Tv Series -->
+            
+                            <!-- Movies Section -->
+                            <h2 id="movies">Movies</h2>
+                            <div class="movies-section">
+                                <!-- Single Movie -->
+                                <div class="movies card" v-for="movie,index in moviesHomePage">
+            
+                                    <div class="card-inner">
+                                        <div class="card-front">
+                                            <!-- Movie Thumbnail -->
+                                            <div class="movie-thumbnail">
+                                                <img :src=" `https://image.tmdb.org/t/p/w342/${movie.poster_path}` ">
+                                            </div>
+                                        </div>
+            
+                                        <div class="card-back" @mouseleave="setTimeout(function(){ movieIndex = -1; }, 300);">
+            
+                                            <!-- Other Infos -->
+                                            <div class="other-infos" v-if="index == movieIndex">
+                                                <!-- Movie Genres -->
+                                                <h4>Genre:</h4>
+                                                <ul>
+                                                    <li v-for="genre in movieGenres">
+                                                        {{ genre.name }}
+                                                    </li>
+                                                </ul>
+            
+                                                <!-- Movie Actors -->
+                                                <h4 class="actors">Actors:</h4>
+                                                <ul>
+                                                    <li v-for="actor in movieCast">
+                                                        {{ actor }}
+                                                    </li>
+                                                </ul>
+            
+                                                <!-- Go Back Button -->
+                                                <button @click="movieIndex = -1" class="movie-inside-button">Go Back</button>
+                                            </div>
+            
+            
+                                            <!-- Movie Infos -->
+                                            <div class="movie-info" v-else>
+            
+                                                <!-- Movie Name -->
+                                                <div class="movie-name">
+                                                    <span class="movie-caption">Title:</span> {{ movie.title || movie.name }}
+                                                </div>
+            
+                                                <!-- Movie Original Name -->
+                                                <div class="movie-original-name"
+                                                    v-show="movie.title != movie.original_title || movie.name != movie.original_name">
+                                                    <span class="movie-caption">Original Title:</span> {{ movie.original_title
+                                                    ||
+                                                    movie.original_name }}
+                                                </div>
+            
+                                                <!-- Movie Language -->
+                                                <div class="movie-lang">
+                                                    <span class="movie-caption">Language:</span>
+                                                    <img src="img/english-flag.png" alt="english-flag"
+                                                        v-if=" movie.original_language == 'en' ">
+                                                    <img src="img/italian-flag.png" alt="italian-flag"
+                                                        v-else-if=" movie.original_language == 'it' ">
+                                                    <img src="img/japan-flag.png" alt="japan-flag"
+                                                        v-else-if=" movie.original_language == 'ja' ">
+                                                    <img src="img/spain-flag.png" alt="spain-flag"
+                                                        v-else-if=" movie.original_language == 'es' ">
+                                                    <span v-else>unknown</span>
+                                                </div>
+            
+                                                <!-- Movie Rating -->
+                                                <div class="movie-rating">
+                                                    <!-- Stars -->
+                                                    <div>
+                                                        <span class="movie-caption">Rating:</span>
+                                                        <i class="fas fa-star"
+                                                            v-for="star in obtainRating(movie.vote_average)"></i><i
+                                                            class="far fa-star"
+                                                            v-for="star in (5 - obtainRating(movie.vote_average))"></i>
+                                                    </div>
+                                                </div>
+            
+                                                <!-- Movie Overviw -->
+                                                <div class="movie-overview">
+                                                    <span class="movie-caption">Overview:</span>
+                                                    <p class="overview" v-if="movie.overview.length > 120">{{
+                                                        movie.overview.substring(0, 80) +
+                                                        '...' }}
+                                                    </p>
+                                                    <p class="overview" v-else>{{ movie.overview }}</p>
+                                                </div>
+            
+                                                <!-- Toggle Other Infos -->
+                                                <button @click="showOtherInfos(movie, index)" class="movie-inside-button more">More</button>
+                                            </div>
+            
+                                        </div>
+                                    </div>
+            
+                                </div>
+                                <!-- End Single Movie -->
+                            </div>
+                            <!-- Movies Section-->
+                        </div>
+                        <!-- End Boolflix Home Page -->
+            
+                    </div>
+                    <!-- End Movies Container -->
+                </main>
+                <!-- END MAIN -->
+            </div>
+            <!-- End Boolflix -->
         </div>
+        <!-- End Boolflix Started -->
 
-    </nav>
-
-    <div id="carousel-news-movies" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner list-new-movies">
-
-        </div>
     </div>
+    <!-- End VueJS Container -->
 
-    <div class="container mb-5">
-        <div class="row">
-            <div class="col-12 col-lg-6 now-playing">
-                <h2>PELÍCULAS POPULARES</h2>
-                <ul class="list-group list-group-flush now-playing__list">
-
-                </ul>
-            </div>
-            <div class="col-12 col-lg-6 top-rated">
-                <h2>PELÍCULAS MEJOR PUNTUADAS</h2>
-                <ul class="list-group list-group-flush top-rated-playing__list"></ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="page-footer font-small bg-dark pt-4 text-white">
-        <div class="container text-center text-md-left">
-            <div class="row">
-                <div class="col-md-4 mt-md-0 mt-3">
-                    <h5 class="text-uppercase font-weight-bold">Pages</h5>
-                    <ul>
-                        <li>
-                            <a href="./index.html">Home</a>
-                        </li>
-                        <li>
-                            <a href="./popular.html">Popular</a>
-                        </li>
-                        <li>
-                            <a href="./now-playing.html">News</a>
-                        </li>
-                        <li>
-                            <a href="./search.html">Search</a>
-                        </li>
-                    </ul>
-                </div>
-                <hr class="clearfix w-100 d-md-none pb-3">
-                <div class="col-md-4 mt-md-0 mt-3">
-                    <h5 class="text-uppercase font-weight-bold">Pages</h5>
-                    <ul>
-                        <li>
-                            <a href="./index.html">Home</a>
-                        </li>
-                        <li>
-                            <a href="./popular.html">Popular</a>
-                        </li>
-                        <li>
-                            <a href="./now-playing.html">News</a>
-                        </li>
-                        <li>
-                            <a href="./search.html">Search</a>
-                        </li>
-                    </ul>
-                </div>
-                <hr class="clearfix w-100 d-md-none pb-3">
-                <div class="col-md-4 mt-md-0 mt-3">
-                    <h5 class="text-uppercase font-weight-bold">Pages</h5>
-                    <ul>
-                        <li>
-                            <a href="./index.html">Home</a>
-                        </li>
-                        <li>
-                            <a href="./popular.html">Popular</a>
-                        </li>
-                        <li>
-                            <a href="./now-playing.html">News</a>
-                        </li>
-                        <li>
-                            <a href="./search.html">Search</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-copyright text-center py-3">© 2020 Copyright:
-            <a href="https://happy-babbage-7de478.netlify.app/" target="_blank"> SariDev</a>
-        </div>
-
-
-    </footer>
-    <!-- Footer -->
-
-
-
-    <script src="js/jquery-3.5.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" integrity="sha512-F5QTlBqZlvuBEs9LQPqc1iZv2UMxcVXezbHzomzS6Df4MZMClge/8+gXrKw2fl5ysdk4rWjR0vKS7NNkfymaBQ==" crossorigin="anonymous"></script>
-    <script src="js/index.js"></script>
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
 </body>
 </html>
