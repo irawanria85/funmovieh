@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Pick-A-Flick</title>
+    <title>Search | Pick-A-Flick</title>
     <link rel="shortcut icon" href="./assets/images/favicon.ico" />
     <!-- firebase -->
     <!-- Firebase App is always required and must be first -->
@@ -27,7 +27,37 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/search.css">
 </head>
 
-<body id="index" class="gtr-bg-black">
+<body id="search" class="gtr-bg-black">
+    <!-- loader -->
+    <div id="loaderOverlay">
+        <div id="pageLoader">
+            <div class="loader">
+                <div class="loader">
+                    <div class="loader">
+                        <div class="loader">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /loader -->
+    <!-- modal -->
+    <div class="modal fade" id="movieModalCenter" tabindex="-1" role="dialog" aria-labelledby="movieModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="movieModelContent">
+                    <!-- movie content should appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal -->
     <div class="wrapper">
         <!-- Sidebar with Nav  -->
         <nav id="sidebar">
@@ -138,7 +168,7 @@
                                             <!-- submit button(add more question before this div) -->
                                             <div class="carousel-item  text-center" last-card="true">
                                                 <button type="submit" class="btn btn-dark" id="advancedSearchBtn">Show
-                                            me the flick!</button>
+                                                    me the flick!</button>
                                                 <!--closing carousel div -->
                                             </div>
                                         </div>
@@ -174,10 +204,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto" id="navList">
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a id="altSearch" class="nav-link">Search</a>
+                        <a id="altSearch" class="nav-link active">Search <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item dropleft hidden" id="profileMenu">
                         <div class="dropdown">
@@ -192,76 +222,21 @@
                 </ul>
             </div>
         </nav>
-
         <!-- Your Content Start Here -->
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-8 offset-sm-2">
-                    <div id="loginCard" class="card my-auto">
-                        <div class="card-body">
-                            <nav>
-                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                    <a class="nav-item nav-link active" id="signin-tab" data-toggle="tab" href="#signin-container" role="tab" aria-controls="signin-container" aria-selected="true">Sign In</a>
-                                    <a class="nav-item nav-link" id="signup-tab" data-toggle="tab" href="#signup-container" role="tab" aria-controls="signup-container" aria-selected="false">Sign Up</a>
-                                </div>
-                            </nav>
-                            <div class="tab-content" id="nav-tabContent">
-                                <div class="tab-pane fade show active" id="signin-container" role="tabpanel" aria-labelledby="signin-tab">
-                                    <!-- signin -->
-                                    <div class="row">
-                                        <form id="signinForm" class="col-sm-12 needs-validation" novalidate>
-                                            <div class="form-group">
-                                                <label for="signinEmail">Email address</label>
-                                                <input type="email" class="form-control gtr-form-control" id="signinEmail" aria-describedby="emailHelp" placeholder="Enter email" required>
-                                                <div class="email-feedback">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="signinPassword">Password</label>
-                                                <input type="password" class="form-control gtr-form-control" id="signinPassword" placeholder="Password" required>
-                                                <div class="password-feedback">
-                                                </div>
-                                            </div>
-                                            <button type="submit" id="signIn" class="btn btn-danger">Sign In</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="signup-container" role="tabpanel" aria-labelledby="signup-tab">
-                                    <!-- signup -->
-                                    <div class="row">
-                                        <form id="signupForm" class="col-sm-12">
-                                            <div class="form-group">
-                                                <label for="signupEmail">Email address</label>
-                                                <input type="email" class="form-control gtr-form-control" id="signupEmail" aria-describedby="emailHelp" placeholder="Enter email">
-                                                <small id="emailHelp" class="form-text text-muted">We'll never share
-                                                    your email with anyone else.</small>
-                                                <div class="email-feedback">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="signupPassword">Password</label>
-                                                <input type="password" class="form-control gtr-form-control" id="signupPassword" placeholder="Password">
-                                                <div class="password-feedback">
-                                                </div>
-                                            </div>
-                                            <button type="submit" id="signUp" class="btn btn-danger">Sign Up</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="firebaseui-auth-container">
-                                <!-- google login will appear here -->
-                            </div>
-                        </div>
-                    </div>
+        <div id="movieContent" class="container">
+            <div id="movies" class="row" style="margin-bottom: 30px;">
+                <!-- movies will appear here -->
+                <div class="col-sm-12">
+                    <p class="text-center text-light">No Results Found Please Search Again.</p>
                 </div>
             </div>
         </div>
         <!-- Your Content Ends Here -->
+        <div id="next" class="text-center"></div>
         <div class="push">
         </div>
     </div>
-    <!-- /wrapper -->
+    <!-- wrapper -->
     <footer class="text-center">
         © Copyright 2018 Got The Runs
     </footer>
@@ -279,7 +254,7 @@
     <script type="text/javascript" src="./assets/js/movie.js"></script>
     <script>
         $(document).ready(function() {
-            loginInit();
+            searchInit();
         });
     </script>
 </body>

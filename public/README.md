@@ -1,30 +1,20 @@
-# Boolflix
-Boolflix is a web app that aims to replicate the basic functions of Netflix using VueJS and TheMovieDb API
+# project1
 
-## Boolflix Start
-You can start Boolflix by clicking on the start button as shown down here
+A movie search web app created to showcase use of Firebase and TMDb Api's.
 
-![intro](media/intro.gif)
+**Link** [Pick-A-Flick](https://j-riv.github.io/project1)
 
-## Boolflix Users
-After Boolflix has started the user interface will be displayed to you, here you can choose a user to join Boolflix homepage
+![Pick-A-Flick](/assets/images/screenshots/pick-a-flick-search-screenshot.jpg)
 
-![users](media/users.png)
+## Built With:
+* [Bootstrap](https://getbootstrap.com/)
+* [jQuery](https://jquery.com/)
+* [Firebase](https://firebase.google.com)
+* [The Movie Database (TMDb)](https://developers.themoviedb.org/3)
 
-## Boolflix Home Page
-After selecting a user you will join the Boolflix Home Page, here you can take a look at trending medias, tv series and movies
+## Description
+User will be able to create an account by using 'Sign in with Google' or email and password. Users will be able to search for movies by genre, actors/actresses, movie titles etc. Users will also be able to do a more advanced search by using the advanced search form. If the user chooses to create an account he/she will be able to save movies to 3 different lists (watch later, have watched and favorites).
 
-![homepage](media/homepage.png)
-
-## Boolflix Medias
-Flip a media card by hovering on it and take a look at the main infos about the movie! 
-You can also watch the movie genres and the first 5 cast members of that movie by clicking on the "More" button
-
-![movie-info](media/movie-info.gif)
-
-## Boolflix Search
-You can also search a movie and filter the searched movies by genre as shown below
-
-![movie-search](media/movie-search.gif)
-
-
+## Thanks
+* [Alexander Dickson](http://alexanderdickson.com/) for [waitForImages](https://github.com/alexanderdickson/waitForImages)
+* [fancyapps](https://fancyapps.com/fancybox/3/) for [fancybox](https://fancyapps.com/fancybox/3/docs/)
